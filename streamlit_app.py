@@ -68,16 +68,20 @@ with st.form('form'):
 
         elif ans1.strip()=="2":
             
-            user_prompt = input("Tell me a pokemon.")
+            user_prompt = st.text_input("Tell me a pokemon.")
 
-            response = client.chat.completions.create(
-                model="gpt-4o",
-                response_format={"type":"json_object"},
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ]
-            )
-            new_pokemon = json.loads(response.choices[0].message.content)
-            print_pokemon(new_pokemon)
-            st.session_state['pokedex'].append(new_pokemon)
+            button = st.button('Create entry')
+
+            if button:
+
+                response = client.chat.completions.create(
+                    model="gpt-4o",
+                    response_format={"type":"json_object"},
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ]
+                )
+                new_pokemon = json.loads(response.choices[0].message.content)
+                print_pokemon(new_pokemon)
+                st.session_state['pokedex'].append(new_pokemon)
