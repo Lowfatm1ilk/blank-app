@@ -52,37 +52,26 @@ system_prompt = "You make pokedex entries but make sure to double check your inf
 
 with st.form('form'):
     ans1 = st.text_input("Would you like to (1) view generated entries of pokedex or (2) add new entries to pokedex ")
-
+    user_prompt = st.text_input("Tell me a pokemon.")
     submit = st.form_submit_button('Submit')
     if submit:
         if ans1.strip()=="1":
-            if(len(st.session_state['pokedex'])>0):
-                with st.form('1'):
-                    pokemon = st.text_input("What pokemon would you like to see in the pokedex ")
-
-                    button = st.form_submit_button('See entry')
-                    if button:
-                        for i in range(len(st.session_state['pokedex'])):
-                            if st.session_state['pokedex'][i]["name"].lower()==pokemon.lower():
-                                print_pokemon(st.session_state['pokedex'][i])
+            for i in range(len(st.session_state['pokedex'])):
+                if st.session_state['pokedex'][i]["name"].lower()==user_prompt.lower():
+                    print_pokemon(st.session_state['pokedex'][i])
 
 
         elif ans1.strip()=="2":
-            with st.form('2'):
-                user_prompt = st.text_input("Tell me a pokemon.")
+            
 
-                button = st.form_submit_button('Create entry')
-
-                if button:
-
-                    response = client.chat.completions.create(
-                        model="gpt-4o",
-                        response_format={"type":"json_object"},
-                        messages=[
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": user_prompt}
-                        ]
-                    )
-                    new_pokemon = json.loads(response.choices[0].message.content)
-                    print_pokemon(new_pokemon)
-                    st.session_state['pokedex'].append(new_pokemon)
+            response = client.chat.completions.create(
+                    model="gpt-4o",
+                    response_format={"type":"json_object"},
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ]
+                )
+            new_pokemon = json.loads(response.choices[0].message.content)
+            print_pokemon(new_pokemon)
+            st.session_state['pokedex'].append(new_pokemon)
