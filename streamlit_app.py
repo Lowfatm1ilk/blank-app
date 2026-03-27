@@ -49,7 +49,9 @@ jason = """{
 """
 
 system_prompt = "You make pokedex entries but make sure to double check your info from trusted pokemon sources with the following json format:" + jason
-
+if len(st.session_state['pokedex']) > 0:
+    for i in st.session_state['pokedex']:
+        st.write(i['name'])
 with st.form('form'):
     ans1 = st.text_input("Would you like to (1) view generated entries of pokedex or (2) add new entries to pokedex ")
     user_prompt = st.text_input("Tell me a pokemon.")
